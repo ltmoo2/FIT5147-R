@@ -1,7 +1,7 @@
 library(shiny)
 library(tidyverse)
 library(ggplot2)
-
+library(leaflet)
 
 Locations <- read_csv("data/Pedestrian_Counting_System_-_Sensor_Locations (Exercise 2).csv")
 

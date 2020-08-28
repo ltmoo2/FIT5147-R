@@ -7,6 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(shiny)
+library(tidyverse)
+library(ggplot2)
+library(leaflet)
 ```
 
 ## R Markdown
@@ -53,4 +57,20 @@ Plot_Daily <- Daily_Counts %>%
              group = Sensor_Name)) +
   geom_line() +
   facet_wrap(~Day)
+
+Plot_Daily
 ```
+
+
+```{r map}
+Plot_Map <- Combined %>%
+  leaflet() %>%
+  addProviderTiles("CartoDB.DarkMatter") %>%
+  addCircles(~longitude, ~latitude, 
+             radius = ~average/20, 
+             label = ~as.character(Sensor_Name),
+             col = "pink")
+
+Plot_Map
+```
+
