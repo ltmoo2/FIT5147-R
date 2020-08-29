@@ -23,17 +23,19 @@ Counts <- read_csv("data/Pedestrian_Counting_System_2019 (Exercise 2).csv")
 
 Counts$Day <- factor(Counts$Day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
-Counts <- Counts %>%
-  mutate(Sensor_Name = if_else(Sensor_Name == "Collins St (North)", "Collins Street (North)", Sensor_Name)) %>%
-   mutate(Sensor_Name = if_else(Sensor_Name == "Flinders la - Swanston St (West) Temp", "Flinders La - Swanston St (West) Temporary", Sensor_Name)) %>%
-  mutate(Sensor_Name = if_else(Sensor_Name == "Flinders La - Swanston St (West) Temp", "Flinders La - Swanston St (West) Temporary", Sensor_Name)) %>%
-  mutate(Sensor_Name = if_else(Sensor_Name == "Lincoln-Swanston(West)", "Lincoln-Swanston (West)", Sensor_Name)) %>%
-  mutate(Sensor_Name = if_else(Sensor_Name == "Pelham St (S)", "Pelham St (South)", Sensor_Name))
-  
-Locations <-  Locations %>%
-  mutate(sensor_name = if_else(sensor_name == "Melbourne Central-Elizabeth St (East)Melbourne Central-Elizabeth St (East)", "Melbourne Central-Elizabeth St (East)", sensor_name)) %>%
-  mutate(sensor_name = if_else(sensor_name == "Building 80 RMIT", "Swanston St - RMIT Building 80", sensor_name)) %>%
-  mutate(sensor_name = if_else(sensor_name == "RMIT Building 14", "Swanston St - RMIT Building 14", sensor_name))
+Counts$Sensor_Name <- recode(Counts$Sensor_Name,
+                             "Collins St (North)" = "Collins Street (North)",
+                             "Flinders la - Swanston St (West) Temp" = "Flinders La - Swanston St (West) Temporary",
+                             "Flinders La - Swanston St (West) Temp" = "Flinders La - Swanston St (West) Temporary",
+                             "Lincoln-Swanston(West)" = "Lincoln-Swanston (West)",
+                             "Pelham St (S)" = "Pelham St (South)"
+                             )
+
+Locations$sensor_name <- recode(Locations$sensor_name,
+                                "Melbourne Central-Elizabeth St (East)Melbourne Central-Elizabeth St (East)" = "Melbourne Central-Elizabeth St (East)",
+                                "Building 80 RMIT" = "Swanston St - RMIT Building 80",
+                                "RMIT Building 14" = "Swanston St - RMIT Building 14"
+)
 
 
 Total_Counts <- Counts %>%
@@ -44,6 +46,9 @@ Total_Counts <- Counts %>%
 
 Combined <- Total_Counts %>% 
   left_join(Locations, by = c("Sensor_Name" = "sensor_name"))
+
+Combined %>%
+  filter(is.na(latitude))
 
 
 
