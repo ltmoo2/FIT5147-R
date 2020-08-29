@@ -67,7 +67,8 @@ Plot_Daily <- Daily_Counts %>%
   geom_line() +
   facet_wrap(~Day)
 
-Plot_Daily
+Plot_Daily +
+  the
 ```
 
 
@@ -77,7 +78,9 @@ Plot_Map <- Combined %>%
   addProviderTiles("CartoDB.DarkMatter") %>%
   addCircles(~longitude, ~latitude, 
              radius = ~average/20, 
-             label = ~as.character(Sensor_Name),
+             label = paste("Sensor:", Combined$Sensor_Name),
+             popup = paste("Sensor:", Combined$Sensor_Name, "<br>",
+                           "Average Hourly Count:", round(Combined$average,digits = 0)),
              col = "pink") %>%
   setView(mean(Combined$longitude), mean(Combined$latitude) + 0.002, zoom = 14)
 

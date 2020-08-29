@@ -83,7 +83,9 @@ server <- function(input, output) {
             addProviderTiles("CartoDB.DarkMatter") %>%
             addCircles(~longitude, ~latitude,
                        radius = ~average/20,
-                       label = ~as.character(Sensor_Name),
+                       label = paste("Sensor:", Combined$Sensor_Name),
+                       popup = paste("Sensor:", Combined$Sensor_Name, "<br>",
+                                     "Average Hourly Count:", round(Combined$average,digits = 0)),
                        col = "pink") %>%
             setView(mean(Combined$longitude), mean(Combined$latitude) + 0.002, zoom = 14)
     })
@@ -94,8 +96,13 @@ server <- function(input, output) {
             ggplot(aes(x = Time,
                        y = average,
                        group = Sensor_Name)) +
-            geom_line() +
-            facet_wrap(~Day)
+            geom_line(colour = "pink",
+                      size = 1) +
+            labs(x = "Hour of day", y = "Average Count") +
+            scale_x_continuous(breaks = 0:24) +
+            theme(axis.text.x = element_text(size = 8)) +
+            facet_wrap(~Day, ncol = 2) +
+            theme_dark()
         print(Plot_Daily)
     })
 }
