@@ -20,6 +20,10 @@ Counts$Sensor_Name <- recode(Counts$Sensor_Name,
                              "Pelham St (S)" = "Pelham St (South)"
 )
 
+Counts$Sensor_Name <- recode(Counts$Sensor_Name,
+                             "Flinders La - Swanston St (West) Temporary" = "Flinders La-Swanston St (West)"
+)
+
 Locations$sensor_name <- recode(Locations$sensor_name,
                                 "Melbourne Central-Elizabeth St (East)Melbourne Central-Elizabeth St (East)" = "Melbourne Central-Elizabeth St (East)",
                                 "Building 80 RMIT" = "Swanston St - RMIT Building 80",
@@ -63,7 +67,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            h2("Mapping Melbourne pedestrian counts"),
-           leafletOutput("mymap"),
+           leafletOutput("mymap", height = 500),
            h2("Average hourly counts for 2019 per day"),
            plotOutput("myplot")
         )
@@ -80,7 +84,8 @@ server <- function(input, output) {
             addCircles(~longitude, ~latitude,
                        radius = ~average/20,
                        label = ~as.character(Sensor_Name),
-                       col = "pink")
+                       col = "pink") %>%
+            setView(mean(Combined$longitude), mean(Combined$latitude) + 0.002, zoom = 14)
     })
 
     output$myplot <- renderPlot({
