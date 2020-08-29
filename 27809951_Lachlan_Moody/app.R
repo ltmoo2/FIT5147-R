@@ -68,6 +68,7 @@ ui <- fluidPage(
         mainPanel(
            h2("Mapping Melbourne pedestrian counts"),
            leafletOutput("mymap", height = 500),
+           fluidRow(verbatimTextOutput("map_marker_click")),
            h2("Average hourly counts for 2019 per day"),
            plotOutput("myplot")
         )
@@ -75,19 +76,24 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
 
     output$mymap <- renderLeaflet({
         Combined %>%
             leaflet() %>%
             addProviderTiles("CartoDB.DarkMatter") %>%
-            addCircles(~longitude, ~latitude,
-                       radius = ~average/20,
+            addCircleMarkers(~longitude, ~latitude,
+                       radius = ~average/100,
                        label = paste("Sensor:", Combined$Sensor_Name),
-                       popup = paste("Sensor:", Combined$Sensor_Name, "<br>",
-                                     "Average Hourly Count:", round(Combined$average,digits = 0)),
+                       layerId = ~Combined$Sensor_Name,
                        col = "pink") %>%
             setView(mean(Combined$longitude), mean(Combined$latitude) + 0.002, zoom = 14)
+
+    })
+
+    observeEvent(input$mymap_marker_click, {
+        test <- input$mymap_marker_click
+        print(test)
     })
 
     output$myplot <- renderPlot({
