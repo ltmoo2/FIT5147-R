@@ -2,6 +2,7 @@ library(shiny)
 library(tidyverse)
 library(ggplot2)
 library(leaflet)
+library(gridExtra)
 
 Locations <- read_csv("data/Pedestrian_Counting_System_-_Sensor_Locations (Exercise 2).csv")
 
@@ -68,7 +69,6 @@ ui <- fluidPage(
         mainPanel(
            h2("Mapping Melbourne pedestrian counts"),
            leafletOutput("mymap", height = 500),
-           fluidRow(verbatimTextOutput("map_marker_click")),
            h2("Average hourly counts for 2019 per day"),
            plotOutput("myplot")
         )
@@ -91,9 +91,18 @@ server <- function(input, output, session) {
 
     })
 
+    observeEvent(input$select, {
+        updateSelectInput(session, "select", "Select sensor",
+                          choices = unique(Combined$Sensor_Name),
+                          selected = input$select)
+    })
+
     observeEvent(input$mymap_marker_click, {
-        test <- input$mymap_marker_click
-        print(test)
+        click <- input$mymap_marker_click
+        sensor <- Combined[which(Combined$latitude == click$lat & Combined$longitude == click$lng), ]$Sensor_Name
+        updateSelectInput(session, "select", "Select Sensor",
+                          choices = unique(Combined$Sensor_Name),
+                          selected = c(sensor))
     })
 
     output$myplot <- renderPlot({
