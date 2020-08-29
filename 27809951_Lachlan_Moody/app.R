@@ -57,23 +57,19 @@ ui <- fluidPage(
         ),
 
     # Sidebar with a slider input for number of bins
-    sidebarLayout(position = "right",
-        sidebarPanel(
-            selectInput("select",
-                        "Select sensor",
-                        choices = unique(Combined$Sensor_Name),
-                        selected = "Alfred Place")
-        ),
 
         # Show a plot of the generated distribution
         mainPanel(
            h2("Mapping Melbourne pedestrian counts"),
-           leafletOutput("mymap", height = 500),
-           h2("Average hourly counts for 2019 per day"),
-           plotOutput("myplot")
+           splitLayout(leafletOutput("mymap", height = 500),
+           plotOutput("myplot"), cellWidths = 800),
+           selectInput("select",
+                       "Select sensor",
+                       choices = unique(Combined$Sensor_Name),
+                       selected = "Alfred Place")
         )
     )
-)
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
@@ -100,7 +96,7 @@ server <- function(input, output, session) {
     observeEvent(input$mymap_marker_click, {
         click <- input$mymap_marker_click
         sensor <- Combined[which(Combined$latitude == click$lat & Combined$longitude == click$lng), ]$Sensor_Name
-        updateSelectInput(session, "select", "Select Sensor",
+        updateSelectInput(session, "select", "Select sensor",
                           choices = unique(Combined$Sensor_Name),
                           selected = c(sensor))
     })
@@ -117,7 +113,8 @@ server <- function(input, output, session) {
             scale_x_continuous(breaks = 0:24) +
             theme(axis.text.x = element_text(size = 8)) +
             facet_wrap(~Day, ncol = 2) +
-            theme_dark()
+            theme_dark() +
+            ggtitle("Average hourly pedestrian counts per day")
         print(Plot_Daily)
     })
 }
