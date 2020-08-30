@@ -1,8 +1,10 @@
+## install.packages(c("shiny", "tidyverse", "ggplot2", "leaflet"))
+
+
 library(shiny)
 library(tidyverse)
 library(ggplot2)
 library(leaflet)
-library(gridExtra)
 
 Locations <- read_csv("data/Pedestrian_Counting_System_-_Sensor_Locations (Exercise 2).csv")
 
