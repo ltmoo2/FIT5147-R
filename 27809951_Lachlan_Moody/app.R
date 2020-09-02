@@ -64,12 +64,14 @@ ui <- fluidPage(
         mainPanel(
            h2("Mapping Melbourne pedestrian counts"),
            splitLayout(leafletOutput("mymap", height = 500),
-           plotOutput("myplot"), cellWidths = 800),
+           plotOutput("myplot"), cellWidths = 800,
+           cellArgs = list(style = "padding: 10px")),
            selectInput("select",
                        "Select sensor",
                        choices = unique(Combined$Sensor_Name),
                        selected = "Alfred Place")
-        )
+        ),
+    includeCSS("styles.css")
     )
 
 
